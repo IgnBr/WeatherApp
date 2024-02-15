@@ -1,0 +1,9 @@
+.weather-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.weather-card {
+    width: auto !important;
+}
