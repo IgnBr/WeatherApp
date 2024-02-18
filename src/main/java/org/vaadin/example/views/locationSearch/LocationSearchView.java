@@ -29,12 +29,14 @@ public class LocationSearchView extends VerticalLayout {
         setSizeFull();
         setAlignItems(Alignment.CENTER);
         setPadding(true);
-        getStyle().set("background-color", "#f0f0f0");
 
         searchField = createSearchField();
         Button searchButton = createSearchButton();
 
-        add(new HorizontalLayout(searchField, searchButton), locationView);
+        HorizontalLayout searchLayout = new HorizontalLayout(searchField, searchButton);
+        searchLayout.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
+
+        add(searchLayout, locationView);
     }
 
     private TextField createSearchField() {
@@ -48,23 +50,24 @@ public class LocationSearchView extends VerticalLayout {
     private Button createSearchButton() {
         Button searchButton = new Button("Search", event -> searchLocation(searchField.getValue()));
         searchButton.setWidth("100px");
-        searchButton.getStyle().set("margin-top", "10px");
         return searchButton;
     }
 
     private void searchLocation(String cityName) {
         searchField.clear();
+        
         LocationListDto locations = weatherApiService.getLocation(cityName);
         Integer locationsCount = locations.getLocationCount();
-        if (locationsCount > 0) {
-            locationGrid.setVisible(true);
-            Notification.show(locationsCount + " matches found!")
-                    .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
-            locationGrid.setLocations(locations.getLocations());
-        } else {
+        if (locationsCount == 0) {
             locationGrid.setVisible(false);
             Notification.show("No matches found!")
                     .addThemeVariants(NotificationVariant.LUMO_ERROR);
+            return;
         }
+
+        locationGrid.setVisible(true);
+        Notification.show(locationsCount + " matches found!")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        locationGrid.setLocations(locations.getLocations());
     }
 }

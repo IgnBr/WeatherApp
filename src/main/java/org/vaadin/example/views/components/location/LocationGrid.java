@@ -28,31 +28,22 @@ public class LocationGrid extends VerticalLayout {
     private final FavouriteLocationService favouriteLocationService;
 
     private final User user;
-
-    private int currentPage = 0;
-
-    private int totalPages = 0;
-
-    private Span pageInfo;
-
-    private List<LocationDto> locations = new ArrayList<>();
-
-    private List<LocationDto> originalLocations = new ArrayList<>();
-
     private final Grid<LocationDto> grid = new Grid<>();
-
-    private HorizontalLayout gridPagingControls;
-
-    private Button prevButton;
-
-    private Button nextButton;
-
-    private List<Integer> favouriteIds;
-
     private final List<FavouriteLocation> favouriteLocations;
+    private int currentPage = 0;
+    private int totalPages = 0;
+    private Span pageInfo;
+    private List<LocationDto> locations = new ArrayList<>();
+    private List<LocationDto> originalLocations = new ArrayList<>();
+    private HorizontalLayout gridPagingControls;
+    private Button prevButton;
+    private Button nextButton;
+    private List<Integer> favouriteIds;
 
     @Inject
     public LocationGrid(UserService userService, FavouriteLocationService favouriteLocationService) {
+        setSizeFull();
+
         this.favouriteLocationService = favouriteLocationService;
         User user = VaadinSession.getCurrent().getAttribute(User.class);
         this.user = userService.findById(user.getId());
@@ -64,7 +55,6 @@ public class LocationGrid extends VerticalLayout {
         updateNavigation();
 
         add(locationFilterField, grid, gridPagingControls);
-
     }
 
     private TextField getLocationFilterField() {
@@ -112,6 +102,7 @@ public class LocationGrid extends VerticalLayout {
         nextButton = new Button("Next", e -> updateGrid(currentPage + 1));
         pageInfo = new Span();
         gridPagingControls = new HorizontalLayout(prevButton, nextButton, pageInfo);
+        gridPagingControls.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
     }
 
     private void setupGrid() {
@@ -123,7 +114,7 @@ public class LocationGrid extends VerticalLayout {
         favouriteIds = favouriteLocations.stream().map(FavouriteLocation::getLocationId)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        grid.addComponentColumn(this::addFavouriteCheckbox);
+        grid.addComponentColumn(this::addFavouriteCheckbox).setHeader("Favourite");
         grid.addItemClickListener(this::onGridItemClick);
     }
 
