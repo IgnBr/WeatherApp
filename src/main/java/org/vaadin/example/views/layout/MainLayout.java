@@ -20,8 +20,7 @@ import com.vaadin.flow.server.VaadinSession;
 import org.vaadin.example.views.favouriteLocations.FavouriteLocationsView;
 import org.vaadin.example.views.locationSearch.LocationSearchView;
 
-// TODO: Add css styling
-@CssImport("./themes/my-theme/styles.css")
+@CssImport("./themes/my-theme/mainLayout.css")
 public class MainLayout extends AppLayout implements RouterLayout {
 
     private static final String APP_NAME = "Weather App";
@@ -30,7 +29,9 @@ public class MainLayout extends AppLayout implements RouterLayout {
     public MainLayout() {
         HorizontalLayout header = buildHeader();
         Tabs navBar = createMenu();
-        addToNavbar(new VerticalLayout(header, navBar));
+        VerticalLayout headerWithNavbar = new VerticalLayout(header, navBar);
+        headerWithNavbar.addClassName("main-layout");
+        addToNavbar(headerWithNavbar);
     }
 
     private HorizontalLayout buildHeader() {
@@ -61,7 +62,6 @@ public class MainLayout extends AppLayout implements RouterLayout {
         tabs.setOrientation(Tabs.Orientation.HORIZONTAL);
         tabs.setFlexGrowForEnclosedTabs(1);
         tabs.setWidthFull();
-        tabs.addClassNames("bg-gray-900", "text-white", "font-bold");
 
         return tabs;
     }
