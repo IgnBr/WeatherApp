@@ -44,7 +44,7 @@ public class RegisterForm extends VerticalLayout {
     @Getter
     private final Button submitButton = createSubmitButton();
 
-    @Getter @Setter
+    @Setter
     private BeanValidationBinder<RegisterDto> binder;
 
     @Inject
