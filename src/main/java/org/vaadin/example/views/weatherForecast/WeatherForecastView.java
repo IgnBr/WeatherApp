@@ -1,7 +1,5 @@
 package org.vaadin.example.views.weatherForecast;
 
-import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -23,14 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 // TODO: Add css styling
-@CssImport("./themes/my-theme/weather.css")
 public class WeatherForecastView extends VerticalLayout implements BeforeEnterObserver {
 
     private final WeatherApiService weatherApiService;
     private final JsonWeatherDescriptionService jsonWeatherDescriptionService;
+    private final HourlyGrid hourlyGrid = new HourlyGrid();
     private WeatherForecastDto weather;
     private String location;
-    private final HourlyGrid hourlyGrid = new HourlyGrid();
     private Integer selectedCard = null;
 
     @Inject
@@ -66,20 +63,18 @@ public class WeatherForecastView extends VerticalLayout implements BeforeEnterOb
     }
 
     private void addWeatherCards() throws IOException {
-        Div container = new Div();
-        container.addClassName("weather-cards-container");
+        HorizontalLayout cardList = new HorizontalLayout();
+        cardList.addClassName("weather-cards-container");
         for (int i = 0; i < 7; i++) {
             WeatherCard card = createWeatherCard(i);
-            card.addClassName("weather-card");
-            container.add(card);
+            cardList.add(card);
         }
 
-        add(new HorizontalLayout(container), hourlyGrid);
+        add(cardList, hourlyGrid);
     }
 
     private WeatherCard createWeatherCard(int index) throws IOException {
         WeatherCard card = new WeatherCard(buildWeatherCardDto(index));
-        card.getElement().getStyle().set("cursor", "pointer");
         card.addClickListener(event -> handleCardClick(index));
         return card;
     }
@@ -110,6 +105,8 @@ public class WeatherForecastView extends VerticalLayout implements BeforeEnterOb
         }
         selectedCard = index;
         updateHourlyGridData();
+        Notification.show("Displaying hourly data for the selected day!")
+                .addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     }
 
     private void updateHourlyGridData() {

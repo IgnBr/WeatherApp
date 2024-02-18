@@ -1,5 +1,7 @@
 package org.vaadin.example.views.components.weather;
 
+import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -9,23 +11,22 @@ import org.vaadin.example.views.components.weather.dtos.WeatherCardDto;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+@CssImport("./themes/my-theme/weatherCard.css")
 public class WeatherCard extends VerticalLayout {
 
     private final WeatherCardDto weatherCardDto;
 
     public WeatherCard(WeatherCardDto weatherCardDto) {
+        this.addClassName("weather-card");
         this.weatherCardDto = weatherCardDto;
         String date = LocalDate.parse(weatherCardDto.getDaily().getTime()).format(DateTimeFormatter.ofPattern("EEEE, MMMM dd"));
         VerticalLayout weatherCardLayout = getWeatherCardLayout(date);
+        weatherCardLayout.setPadding(false);
         add(weatherCardLayout);
     }
 
     private VerticalLayout getWeatherCardLayout(String date) {
         VerticalLayout weatherCardLayout = new VerticalLayout();
-        weatherCardLayout.getStyle().set("border", "1px solid #ccc");
-        weatherCardLayout.getStyle().set("padding", "20px");
-        weatherCardLayout.setWidth("300px");
-
         weatherCardLayout.add(
                 getLocationLayout(),
                 getDateLayout(date),
@@ -35,7 +36,6 @@ public class WeatherCard extends VerticalLayout {
                 getWindSpeedLayout(),
                 getHumidityLayout()
         );
-
         return weatherCardLayout;
     }
 
@@ -61,9 +61,11 @@ public class WeatherCard extends VerticalLayout {
 
     private HorizontalLayout getLocationLayout() {
         HorizontalLayout locationLayout = new HorizontalLayout();
-        locationLayout.add(new Image(weatherCardDto.getIcon(), "Weather Icon"));
+        Div imageContainer = new Div(new Image(weatherCardDto.getIcon(), "Weather Icon"));
+        imageContainer.addClassName("image-container");
+        locationLayout.add(imageContainer);
         locationLayout.add(new Span(weatherCardDto.getLocation()));
-        locationLayout.setAlignItems(Alignment.BASELINE);
+        locationLayout.setDefaultVerticalComponentAlignment(Alignment.BASELINE);
         return locationLayout;
     }
 
