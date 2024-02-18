@@ -4,6 +4,7 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.binder.ValidationResult;
 import com.vaadin.flow.data.binder.ValueContext;
+import lombok.Getter;
 import org.vaadin.example.views.register.dtos.RegisterDto;
 
 public class RegisterBinder {
@@ -12,12 +13,15 @@ public class RegisterBinder {
 
     private boolean enablePasswordValidation;
 
+    @Getter
+    private BeanValidationBinder<RegisterDto> binder;
+
     public RegisterBinder(RegisterForm registerForm) {
         this.registerForm = registerForm;
     }
 
     public void addBindingAndValidation() {
-        BeanValidationBinder<RegisterDto> binder = new BeanValidationBinder<>(RegisterDto.class);
+        binder = new BeanValidationBinder<>(RegisterDto.class);
         binder.bindInstanceFields(registerForm);
 
         binder.forField(registerForm.getPassword())
@@ -29,14 +33,6 @@ public class RegisterBinder {
         });
 
         binder.setStatusLabel(registerForm.getErrorMessageField());
-        
-        registerForm.getSubmitButton().addClickListener(event -> {
-            try {
-                RegisterDto registerDto = new RegisterDto();
-                binder.writeBean(registerDto);
-            } catch (ValidationException ignored) {
-            }
-        });
     }
 
     private ValidationResult passwordValidator(String pass1, ValueContext ctx) {

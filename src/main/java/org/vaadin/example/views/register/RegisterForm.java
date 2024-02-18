@@ -12,10 +12,14 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.PasswordField;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.ValidationException;
 import jakarta.inject.Inject;
 import lombok.Getter;
+import lombok.Setter;
 import org.vaadin.example.entity.User;
 import org.vaadin.example.service.UserService;
+import org.vaadin.example.views.register.dtos.RegisterDto;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -40,6 +44,9 @@ public class RegisterForm extends VerticalLayout {
     @Getter
     private final Button submitButton = createSubmitButton();
 
+    @Getter @Setter
+    private BeanValidationBinder<RegisterDto> binder;
+
     @Inject
     public RegisterForm(UserService userService) {
         this.userService = userService;
@@ -53,16 +60,18 @@ public class RegisterForm extends VerticalLayout {
         setJustifyContentMode(JustifyContentMode.CENTER);
     }
 
-    // TODO: Fix bug where registration is allowed when binder shows errors
     private Button createSubmitButton() {
         Button submitButton = new Button("Sign Up", event -> {
-            if (Objects.equals(username.getValue(), "") || Objects.equals(password.getValue(), "")) return;
-            User user = new User(username.getValue(), password.getValue());
-            try {
-                userService.save(user);
-                handleSuccessfulRegistration();
-            } catch (Exception e) {
-                handleRegistrationFailure();
+            if (binder.isValid()) {
+                try {
+                    RegisterDto registerDto = new RegisterDto();
+                    binder.writeBean(registerDto);
+                    User user = new User(registerDto.getUsername(), registerDto.getPassword());
+                    userService.save(user);
+                    handleSuccessfulRegistration();
+                } catch (ValidationException e) {
+                    handleRegistrationFailure();
+                }
             }
         });
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);

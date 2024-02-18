@@ -14,6 +14,7 @@ public class RegisterView extends VerticalLayout {
         setHorizontalComponentAlignment(Alignment.CENTER, registerForm);
         RegisterBinder registrationFormBinder = new RegisterBinder(registerForm);
         registrationFormBinder.addBindingAndValidation();
+        registerForm.setBinder(registrationFormBinder.getBinder());
         add(registerForm);
     }
 }
