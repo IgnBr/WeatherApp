@@ -30,21 +30,17 @@ public class MainLayout extends AppLayout implements RouterLayout {
     public MainLayout() {
         HorizontalLayout header = buildHeader();
         Tabs navBar = createMenu();
-
         addToNavbar(new VerticalLayout(header, navBar));
     }
 
     private HorizontalLayout buildHeader() {
         Span appName = new Span(APP_NAME);
-        appName.addClassNames("text-white", "font-bold", "text-lg");
         Button logout = new Button("Log Out", VaadinIcon.SIGN_OUT.create(), this::logout);
-        logout.addClassNames("text-white", "font-bold");
 
         HorizontalLayout header = new HorizontalLayout(appName, logout);
         header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
         header.setJustifyContentMode(FlexComponent.JustifyContentMode.BETWEEN);
         header.setWidthFull();
-        header.addClassNames("bg-blue-600", "p-4", "text-white");
 
         return header;
     }

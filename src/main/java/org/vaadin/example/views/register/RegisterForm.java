@@ -21,7 +21,6 @@ import org.vaadin.example.entity.User;
 import org.vaadin.example.service.UserService;
 import org.vaadin.example.views.register.dtos.RegisterDto;
 
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public class RegisterForm extends VerticalLayout {
@@ -41,11 +40,11 @@ public class RegisterForm extends VerticalLayout {
     @Getter
     private final Span errorMessageField = new Span();
 
-    @Getter
-    private final Button submitButton = createSubmitButton();
-
     @Setter
     private BeanValidationBinder<RegisterDto> binder;
+
+    @Getter
+    private final Button submitButton = createSubmitButton();
 
     @Inject
     public RegisterForm(UserService userService) {
@@ -56,6 +55,7 @@ public class RegisterForm extends VerticalLayout {
     }
 
     private void setLayout() {
+        setSizeFull();
         setAlignItems(Alignment.CENTER);
         setJustifyContentMode(JustifyContentMode.CENTER);
     }
@@ -74,6 +74,7 @@ public class RegisterForm extends VerticalLayout {
                 }
             }
         });
+        submitButton.setClassName("register-button");
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         return submitButton;
     }
